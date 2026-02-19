@@ -2,19 +2,19 @@
 
 > **Status: 🚧 Ongoing Project**
 
-A Retrieval-Augmented Generation (RAG) chatbot that lets you explore how people feel about any topic using **1.6 million real tweets** from the Sentiment140 dataset. Ask a question, get an AI-generated answer backed by real tweet evidence.
+A RAG-based chatbot that lets you explore how people feel about any topic using **1.6 million real tweets** from the Sentiment140 dataset. Ask a question, get an AI-generated answer backed by real tweet evidence.
 
 ---
 
-## 📸 Demo
+## 💬 Example
 
-> *Ask: "What do people think about coffee?"*
-> 
-> **Bot:** People are overwhelmingly positive about coffee, especially in the morning. A small number of users mention negative experiences like headaches.
-> 
-> 😊 *i love my morning coffee so much*  
-> 😊 *coffee makes everything better*  
-> 😔 *coffee gives me headaches i hate it*
+> **You ask:** What do people think about coffee?
+>
+> **Bot:** People are very positive about coffee, especially in the morning!
+>
+> 😊 *i love my morning coffee so much*
+> 😊 *coffee makes everything better*
+> 😔 *coffee gives me headaches*
 
 ---
 
@@ -25,26 +25,22 @@ A Retrieval-Augmented Generation (RAG) chatbot that lets you explore how people 
         │
         ▼
 ┌─────────────────────┐
-│  ETL Pipeline       │  Load → Clean → Sample 50K tweets
-│  step1_load_data.py │
+│   load_data.py      │  Load CSV → Clean tweets → Save 50K sample
 └─────────────────────┘
         │
         ▼
 ┌─────────────────────┐
-│  Embedding + Index  │  Convert text → numbers → FAISS index
-│  step2_embed_index  │  (sentence-transformers/all-MiniLM-L6-v2)
+│   embed_index.py    │  Convert tweets → numbers → Build FAISS index
 └─────────────────────┘
         │
         ▼
 ┌─────────────────────┐
-│  RAG Chatbot        │  Search → Retrieve → Generate answer
-│  step3_chatbot.py   │  (google/flan-t5-base)
+│   chatbot.py        │  Search tweets → Generate answer
 └─────────────────────┘
         │
         ▼
 ┌─────────────────────┐
-│  Streamlit UI       │  Interactive web interface
-│  app.py             │  Clickable topics + sentiment tabs
+│   app.py            │  Streamlit web interface
 └─────────────────────┘
 ```
 
@@ -54,12 +50,11 @@ A Retrieval-Augmented Generation (RAG) chatbot that lets you explore how people 
 
 | Component | Tool |
 |---|---|
-| Dataset | Sentiment140 (1.6M tweets, Kaggle) |
+| Dataset | Sentiment140 — 1.6M tweets (Kaggle) |
 | ETL & Cleaning | Python, Pandas, Regex |
-| Embeddings | `sentence-transformers/all-MiniLM-L6-v2` |
+| Embeddings | sentence-transformers/all-MiniLM-L6-v2 |
 | Vector Search | FAISS (Facebook AI Similarity Search) |
-| LLM | `google/flan-t5-base` (free, runs on CPU) |
-| RAG Pipeline | Custom built with HuggingFace Transformers |
+| LLM | google/flan-t5-base (free, runs on CPU) |
 | Interface | Streamlit |
 
 ---
@@ -81,27 +76,12 @@ pip install -r requirements.txt
 - Go to: https://www.kaggle.com/datasets/kazanova/sentiment140
 - Download and place at: `data/raw/dataset.csv`
 
-### 4. Run the pipeline in order
+### 4. Run in order
 ```bash
-# Step 1 - clean the data
-python step1_load_data.py
-
-# Step 2 - build the search index (takes ~5 mins)
-python step2_embed_index.py
-
-# Step 3 - launch the app
+python load_data.py
+python embed_index.py
 streamlit run app.py
 ```
-
----
-
-## 💬 Example Questions
-
-- *What do people think about coffee?*
-- *Show me negative tweets about Mondays*
-- *How do people feel about birthdays?*
-- *Do people like summer?*
-- *What are positive tweets about music?*
 
 ---
 
@@ -110,47 +90,30 @@ streamlit run app.py
 ```
 tweet-sentiment-analyser/
 ├── data/
-│   ├── raw/          ← place dataset.csv here
-│   ├── clean/        ← auto-generated after step 1
-│   └── index/        ← auto-generated after step 2
-├── step1_load_data.py    ← ETL: load, clean, sample tweets
-├── step2_embed_index.py  ← embed tweets + build FAISS index
-├── step3_chatbot.py      ← terminal chatbot (optional)
-├── app.py                ← Streamlit web interface
+│   ├── raw/        ← place dataset.csv here
+│   ├── clean/      ← auto-generated
+│   └── index/      ← auto-generated
+├── load_data.py    ← cleans and samples 50K tweets
+├── embed_index.py  ← builds FAISS search index
+├── chatbot.py      ← terminal chatbot
+├── app.py          ← Streamlit web interface
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## 🔧 Requirements
-
-```
-pandas
-numpy
-faiss-cpu
-sentence-transformers==2.7.0
-transformers
-torch==2.1.0
-torchvision==0.16.0
-streamlit
-tqdm
-```
-
----
-
 ## 🚧 Ongoing Work
 
-- [ ] Add neutral sentiment class
-- [ ] Deploy on Streamlit Cloud (public URL)
-- [ ] Add date-based filtering (see how sentiment changes over time)
-- [ ] Swap flan-t5 for a larger LLM for better answers
-- [ ] Add word cloud visualisation per topic
+- [ ] Deploy on Streamlit Cloud
+- [ ] Add date-based filtering
+- [ ] Add word cloud per topic
+- [ ] Upgrade to a larger LLM for better answers
 
 ---
 
 ## 👩‍💻 Author
 
-**NithyaShree RaviKumar**  
-M.S. Data Science, Analytics and Engineering — Arizona State University  
+**NithyaShree RaviKumar**
+M.S. Data Science, Analytics and Engineering — Arizona State University
 [LinkedIn](https://www.linkedin.com/in/nithya-shree-ravi-kumar-b3b010241) | [GitHub](https://github.com/Nithya162) | [Scholar](https://scholar.google.com/citations?user=KtkZ8fgAAAAJ&hl=en)
